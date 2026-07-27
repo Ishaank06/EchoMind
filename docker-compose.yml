@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: mydatabase
     ports:
-      - "5432:5432" # Maps your computer's port to the container's port
+      - "5433:5432" # Maps your computer's port to the container's port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Keeps data safe if container restarts
     restart: unless-stopped
