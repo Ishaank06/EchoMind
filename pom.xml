@@ -47,6 +47,57 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- ── Security ──────────────────────────────────────── -->
+		<!--
+		    spring-boot-starter-security pulls in:
+		    - Spring Security Core (filter chain, AuthenticationManager, SecurityContext)
+		    - Spring Security Web (HTTP security, CSRF, session management)
+		    - Spring Security Config (@EnableWebSecurity, SecurityFilterChain)
+		    The moment this is on the classpath, ALL endpoints become protected
+		    with a generated password. We'll customize this in SecurityConfig.
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!--
+		    OAuth2 Client: provides OAuth2LoginConfigurer, OAuth2User,
+		    and the plumbing to redirect to GitHub, exchange codes for tokens,
+		    and retrieve user profiles. Without this, you'd implement the
+		    entire OAuth2 handshake manually (redirect, callback, token exchange).
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
+		<!--
+		    JJWT (Java JWT) — split into 3 artifacts:
+		    - jjwt-api: compile-time interfaces (Jwts, Claims, etc.)
+		    - jjwt-impl: runtime implementation (signing, parsing)
+		    - jjwt-jackson: JSON serializer for JWT payloads (uses Jackson, already on classpath)
+		    This separation follows the API/implementation pattern: your code depends only
+		    on the API. If JJWT changes its internals, your code doesn't recompile.
+		-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.13.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.13.0</version>
+			<scope>runtime</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
