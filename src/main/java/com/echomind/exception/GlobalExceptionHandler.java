@@ -2,6 +2,8 @@ package com.echomind.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -86,6 +88,31 @@ public class GlobalExceptionHandler {
         body.put("errors", fieldErrors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    /**
+     * Handles BadCredentialsException → 401 Unauthorized
+     *
+     * Thrown by AuthService when email/password don't match.
+     * Uses a generic message to prevent email enumeration.
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    /**
+     * Handles AccessDeniedException → 403 Forbidden
+     *
+     * Thrown when an authenticated user tries to access a resource
+     * they don't have the right role for (e.g., USER accessing an ADMIN endpoint).
+     *
+     * 401 = "Who are you?" (not authenticated)
+     * 403 = "I know who you are, but you can't do this" (not authorized)
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Access denied: insufficient permissions");
     }
 
     /**

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -86,5 +87,27 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    /**
+     * GET /api/users/admin/all — Admin-only endpoint
+     *
+     * @PreAuthorize("hasRole('ADMIN')"): Spring Security checks if the
+     * authenticated user's authorities contain "ROLE_ADMIN".
+     * Note: hasRole('ADMIN') automatically prepends "ROLE_" — so it
+     * checks for "ROLE_ADMIN" in the authorities list.
+     *
+     * If the user has ROLE_USER → 403 Forbidden
+     * If the user is not authenticated → 401 Unauthorized
+     * If the user has ROLE_ADMIN → 200 OK
+     *
+     * This demonstrates method-level security. You can also do path-level
+     * security in SecurityConfig, but @PreAuthorize is more granular and
+     * keeps the authorization rule next to the code it protects.
+     */
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserResponse>> getAllUsersAdmin() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
