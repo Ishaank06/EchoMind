@@ -108,6 +108,7 @@ public class UserService {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .role(user.getRole() != null ? user.getRole().name() : null)
                 .build();
     }
 }
